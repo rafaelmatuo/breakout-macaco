@@ -34,7 +34,7 @@
 
 (defn create-ball-entity!
   [screen]
-  (let [ball (texture "ball.png")
+  (let [ball (texture "DK.png")
         width (/ (texture! ball :get-region-width) pixels-per-tile)
         height (/ (texture! ball :get-region-height) pixels-per-tile)]
     (assoc ball
@@ -55,7 +55,8 @@
 (defscreen main-screen
   :on-show
   (fn [screen entities]
-    (let [screen (update! screen
+    (let [
+           screen (update! screen
                           :camera (orthographic)
                           :renderer (stage)
                           :world (box-2d 0 0))
@@ -100,24 +101,31 @@
          (assoc (doto (create-rect-entity! screen block block-w block-h)
                   (body-position! x y 0))
                 :block? true))]))
-  
+
   :on-render
   (fn [screen entities]
     (clear!)
     (->> entities
          (step! screen)
          (render! screen)))
-  
+
+  ;tentando adicionar setas para movimentar a barra
+  ;:on-key-down
+  ;(fn [screen entities]
+  ;  (move-paddle! entities)
+  ;  nil)
+
   :on-mouse-moved
   (fn [screen entities]
     (move-paddle! entities)
     nil)
-  
+
+
   :on-touch-dragged
   (fn [screen entities]
     (move-paddle! entities)
     nil)
-  
+
   :on-begin-contact
   (fn [screen entities]
     (when-let [entity (first-entity screen entities)]
@@ -134,7 +142,7 @@
     (assoc (label "0" (color :white))
            :id :fps
            :x 5))
-  
+
   :on-render
   (fn [screen entities]
     (->> (for [entity entities]
@@ -142,7 +150,7 @@
              :fps (doto entity (label! :set-text (str (game :fps))))
              entity))
          (render! screen)))
-  
+
   :on-resize
   (fn [screen entities]
     (height! screen 300)))
